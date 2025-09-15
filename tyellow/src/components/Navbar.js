@@ -3,12 +3,12 @@ import styles from "./Navbar.module.css";
 const Navbar = () => {
   return (
     <nav>
-      <NavLink to="">
+      <NavLink to="/">
         Tiny<span>Yellow</span>
       </NavLink>
       <ul>
         <li>
-          <NavLink to="/home">Home</NavLink>
+          <NavLink to="/">Home</NavLink>
         </li>
         <li>
           <NavLink to="/about">About</NavLink>
@@ -17,5 +17,4 @@ const Navbar = () => {
     </nav>
   );
 };
-
 export default Navbar;
