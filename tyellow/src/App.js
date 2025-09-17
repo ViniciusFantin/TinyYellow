@@ -6,6 +6,8 @@ import Footer from "./components/Footer.js";
 /* Pages */
 import Home from "./pages/home/Home.tsx";
 import About from "./pages/about/About.tsx";
+import Login from "./pages/login/Login.js";
+import Register from "./pages/register/Register.js";
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </div>
         <Footer />

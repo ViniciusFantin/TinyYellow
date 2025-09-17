@@ -2,7 +2,7 @@ import styles from "./Footer.module.css";
 
 const Footer = () => {
   return (
-    <footer>
+    <footer className={styles.footter}>
       <h3>
         Compartilhe suas ideias e seus interesse no seu{" "}
         <span>prórpio espaço</span>
