@@ -2,13 +2,17 @@ import styles from "./Register.module.css";
 import { useState, useEffect } from "react";
 
 const Register = () => {
-  const [dispalyName, setDisplayName] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+    const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:4000";
+
+    const handleSubmit = async (e) => {
     e.preventDefault();
 
     setError("");
@@ -23,6 +27,13 @@ const Register = () => {
       setError("As senhas precisam ser iguais");
       return;
     }
+
+      const res = await fetch(`${API_BASE}/api/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ displayName, email, password }),
+      });
+
   };
   return (
     <div className={styles.Register}>
