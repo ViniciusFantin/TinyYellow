@@ -29,8 +29,13 @@ const Register = () => {
 
     const res = await createUser(user);
 
-    console.log(user);
+    console.log(res);
   };
+  useEffect(() => {
+    if (authError) {
+      setError(authError);
+    }
+  }, [authError]);
   return (
     <div className={styles.Register}>
       <h1>Cadastre-se para postar</h1>
@@ -41,7 +46,7 @@ const Register = () => {
           <input
             type="text"
             name="displayName"
-            placeHolder="Nome de Usuário"
+            placeholder="Nome de Usuário"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
           />
@@ -51,7 +56,7 @@ const Register = () => {
           <input
             type="email"
             name="email"
-            placeHolder="E-mail do usuário"
+            placeholder="E-mail do usuário"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -61,7 +66,7 @@ const Register = () => {
           <input
             type="password"
             name="password"
-            placeHolder="Insira sua senha"
+            placeholder="Insira sua senha"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -71,12 +76,17 @@ const Register = () => {
           <input
             type="password"
             name="confirmPassword"
-            placeHolder="Confirme sua senha"
+            placeholder="Confirme sua senha"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </label>
-        <button className="btn">Cadastrar</button>
+        {!loading && <button className="btn">Cadastrar</button>}
+        {loading && (
+          <button className="btn" disabled>
+            Aguarde...
+          </button>
+        )}
         {error && <p className="error">{error}</p>}
       </form>
     </div>

@@ -5,6 +5,8 @@ import {
   signOut,
 } from "firebase/auth";
 
+// importar banco de dados
+
 import { auth } from "../firebase/config";
 
 import { useState, useEffect } from "react";
