@@ -1,18 +1,39 @@
 import styles from "./CreatePost.module.css";
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthValue } from "../../context/AuthContext";
+import {auth} from "../../firebase/config";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [image, setImage] = useState("");
   const [body, setBody] = useState("");
   const [tags, setTags] = useState("");
-  const [formError, setFormError] = useState("");
+  const [userID, setUserID] = useState("");
+  const [error, setFormError] = useState("");
+  const [loading, setLoading] = useState(null);
+  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:4000";
 
-  const handleSubmit = (e) => {
-    e.preventDefautl();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setFormError("");
+
+    if (!title || !image || !body || !tags) {
+      setFormError("Preencha todos os campos");
+
+
+      try {
+        const res = await fetch(`${API_BASE}/api/posts/create`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title, image, body, tags }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data?.error || "Erro ao cadastrar");
+      } catch (e) {
+        setFormError(e.message);
+      }
+    }
   };
   return (
     <div>
@@ -37,7 +58,7 @@ const CreatePost = () => {
             name="image"
             required
             placeholder="insira uma imagem massa"
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => setImage(e.target.value)}
             value={image}
           />
         </label>
@@ -62,14 +83,13 @@ const CreatePost = () => {
             value={tags}
           />
         </label>
-        <button className="btn">Cadastrar</button>
-        {/* {!loading && <button className="btn">Cadastrar</button>}
-        {loading && (
-          <button className="btn" disabled>
-            Aguarde...
-          </button>
-        )}
-        {error && <p className="error">{error}</p>} */}
+          {!loading && <button className="btn">Cadastrar</button>}
+          {loading && (
+              <button className="btn" disabled>
+                  Aguarde...
+              </button>
+          )}
+          {error && <p className="error">{error}</p>}
       </form>
     </div>
   );

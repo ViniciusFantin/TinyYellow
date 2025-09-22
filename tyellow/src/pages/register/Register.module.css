@@ -5,3 +5,15 @@
 .register p {
   color: #aaa;
 }
+
+
+/* Register.module.css */
+.success {
+  color: #166534;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 12px;
+  font-weight: 600;
+}

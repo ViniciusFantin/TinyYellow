@@ -8,34 +8,56 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:4000";
 
-  const { createUser, error: authError, loading } = useAuthentication;
-
+    const { createUser, error: authError, loading } = useAuthentication();
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setError("");
+    setSuccess("");
 
-    const user = {
-      displayName,
-      email,
-      password,
-    };
+      const user = {
+          displayName,
+          email,
+          password,
+      };
 
     if (password !== confirmPassword) {
       setError("As senhas precisam ser iguais");
       return;
     }
+    if (!displayName || !email || !password) {
+      setError("Preencha todos os campos");
+      return;
+    }
 
     const res = await createUser(user);
 
-    console.log(res);
-  };
-  useEffect(() => {
-    if (authError) {
-      setError(authError);
+    try {
+      const res = await fetch(`${API_BASE}/api/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ displayName, email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Erro ao cadastrar");
+
+      // sucesso
+      setSuccess("Cadastro realizado com sucesso!");
+      setDisplayName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      // opcional: esconder o alerta após alguns segundos
+      setTimeout(() => setSuccess(""), 4000);
+    } catch (err) {
+      setError(err.message);
     }
-  }, [authError]);
+  };
+
+  useEffect(() => {}, []);
+
   return (
     <div className={styles.Register}>
       <h1>Cadastre-se para postar</h1>
@@ -81,13 +103,16 @@ const Register = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </label>
+
         {!loading && <button className="btn">Cadastrar</button>}
         {loading && (
           <button className="btn" disabled>
             Aguarde...
           </button>
         )}
+
         {error && <p className="error">{error}</p>}
+          {!error && success && <p className="success">{success}</p>}
       </form>
     </div>
   );

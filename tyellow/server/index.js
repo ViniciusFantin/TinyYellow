@@ -2,14 +2,18 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
+import { useGetters } from '../src/hooks/useGetters.js';
+import {auth} from "../src/firebase/config.js";
 
 dotenv.config();
+
+const { getIDbyEmail } = useGetters();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const pool = mysql.createPool({
+export const pool = mysql.createPool({
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT || 3306),
   user: process.env.DB_USER,
@@ -25,7 +29,7 @@ async function ensureSchema() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      display_name VARCHAR(100) NOT NULL,
+      name VARCHAR(100) NOT NULL,
       email VARCHAR(255) NOT NULL UNIQUE,
       password VARCHAR(255) NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -56,7 +60,7 @@ app.post('/api/register', async (req, res) => {
   }
   try {
     const [result] = await pool.execute(
-      'INSERT INTO users (display_name, email, password) VALUES (?, ?, ?)',
+      'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
       [displayName, email, password]
     );
     res.status(201).json({ id: result.insertId, displayName, email });
@@ -68,9 +72,32 @@ app.post('/api/register', async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+app.get('/api/users/list', async (_req, res) => {
+    try {
+        const [rows] = await pool.execute('SELECT * FROM users');
+        res.json(rows);
+    } catch (e) {}
+})
 
+app.post('/api/posts/create', async (req, res) => {
+    const email = auth.currentUser.email;
+    const userID = await pool.execute('SELECT id FROM users WHERE email = ?', [email]);
 
-app.post('/api/posts/create', async (req, res) => {})
+    const { title, image, content, tags } = req.body;
+    if (!title || !image || !content || !tags) {
+        return res.status(400).json({error: 'Faltam dados para criar o post'});
+    }
+    try {
+        const [result] = await pool.execute(
+            'INSERT INTO posts (post_tittle, post_image, post_content, post_tags, userID) VALUES (?, ?, ?, ?, ?)',
+            [title, image, content, tags, userID]
+        );
+        res.status(201).json({ id: result.insertId, title, image, content, tags });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+})
+
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

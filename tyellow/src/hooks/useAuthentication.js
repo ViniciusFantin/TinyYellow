@@ -53,10 +53,13 @@ export const useAuthentication = () => {
 
       if (error.message.includes("Password")) {
         systemErrorMessage = "the password must be at least 6 characters long.";
+        console.log(systemErrorMessage);
       } else if (error.message.includes("email-already")) {
-        systemErrorMessage = "email alreary exists ";
+        systemErrorMessage = "email already exists ";
+        console.log(systemErrorMessage);
       } else {
         systemErrorMessage = "oops, an error occurred";
+          console.log(systemErrorMessage);
       }
 
       setLoading(false);
@@ -91,8 +94,8 @@ export const useAuthentication = () => {
       else {
         systemErrorMessage = "Ocorreu um erro, por favor tenta mais tarde.";
       }
-      console.log(systemErrorMessage);
       setError(systemErrorMessage);
+      console.log(systemErrorMessage);
     }
 
     setLoading(false);
