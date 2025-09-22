@@ -1,42 +1,56 @@
 import styles from "./CreatePost.module.css";
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthValue } from "../../context/AuthContext";
-import {auth} from "../../firebase/config";
+import { useInsertDocument } from "../../hooks/useInsertDocument";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [image, setImage] = useState("");
   const [body, setBody] = useState("");
   const [tags, setTags] = useState("");
-  const [userID, setUserID] = useState("");
-  const [error, setFormError] = useState("");
-  const [loading, setLoading] = useState(null);
-  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:4000";
+  const [formError, setFormError] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const { user } = useAuthValue();
+
+  const navigate = useNavigate();
+
+  const { insertDocument, response } = useInsertDocument("posts");
+
+  const handleSubmit = (e) => {
+    e.preventDefautl();
     setFormError("");
 
-    if (!title || !image || !body || !tags) {
-      setFormError("Preencha todos os campos");
-
-
-      try {
-        const res = await fetch(`${API_BASE}/api/posts/create`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title, image, body, tags }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data?.error || "Erro ao cadastrar");
-      } catch (e) {
-        setFormError(e.message);
-      }
+    /* valida a imagem URL */
+    try {
+      new URL(image);
+    } catch (error) {
+      setFormError("A imagem precisa ser uma URL.");
     }
+
+    const tagsArray = tags.split(".").map((tag) => tag.trim().toLowerCase());
+
+    /* Checa todos os valores */
+    if (!title || !image || !tags || !body) {
+      setFormError("Preencha todos os campos");
+    }
+
+    if (formError) return;
+
+    insertDocument({
+      title,
+      image,
+      body,
+      tagsArray,
+      uid: user.uid,
+      createBy: user.displayName,
+    });
+    /* redict */
+    navigate("/");
   };
   return (
-    <div>
+    <div className={styles.create_post}>
       <h2>Criar post</h2>
       <p>Escreva algo interessante e compartilhe suas ideias!</p>
       <form onSubmit={handleSubmit}>
@@ -58,7 +72,7 @@ const CreatePost = () => {
             name="image"
             required
             placeholder="insira uma imagem massa"
-            onChange={(e) => setImage(e.target.value)}
+            onChange={(e) => setTitle(e.target.value)}
             value={image}
           />
         </label>
@@ -83,13 +97,15 @@ const CreatePost = () => {
             value={tags}
           />
         </label>
-          {!loading && <button className="btn">Cadastrar</button>}
-          {loading && (
-              <button className="btn" disabled>
-                  Aguarde...
-              </button>
-          )}
-          {error && <p className="error">{error}</p>}
+
+        {!response && <button className="btn">Cadastrar</button>}
+        {response && (
+          <button className="btn" disabled>
+            Aguarde...
+          </button>
+        )}
+        {response.error && <p className="error">{response.error}</p>}
+        {formError && <p className="error">{formError}</p>}
       </form>
     </div>
   );
