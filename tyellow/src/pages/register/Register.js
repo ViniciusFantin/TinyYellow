@@ -1,3 +1,4 @@
+import { useAuthentication } from "../../hooks/useAuthentication";
 import styles from "./Register.module.css";
 import { useState, useEffect } from "react";
 
@@ -7,12 +8,10 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [loading, setLoading] = useState(false);
 
-    const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:4000";
+  const { createUser, error: authError, loading } = useAuthentication;
 
-    const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     setError("");
@@ -28,13 +27,15 @@ const Register = () => {
       return;
     }
 
-      const res = await fetch(`${API_BASE}/api/register`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ displayName, email, password }),
-      });
+    const res = await createUser(user);
 
+    console.log(res);
   };
+  useEffect(() => {
+    if (authError) {
+      setError(authError);
+    }
+  }, [authError]);
   return (
     <div className={styles.Register}>
       <h1>Cadastre-se para postar</h1>
@@ -45,7 +46,7 @@ const Register = () => {
           <input
             type="text"
             name="displayName"
-            placeHolder="Nome de Usuário"
+            placeholder="Nome de Usuário"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
           />
@@ -55,7 +56,7 @@ const Register = () => {
           <input
             type="email"
             name="email"
-            placeHolder="E-mail do usuário"
+            placeholder="E-mail do usuário"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -65,7 +66,7 @@ const Register = () => {
           <input
             type="password"
             name="password"
-            placeHolder="Insira sua senha"
+            placeholder="Insira sua senha"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -75,12 +76,17 @@ const Register = () => {
           <input
             type="password"
             name="confirmPassword"
-            placeHolder="Confirme sua senha"
+            placeholder="Confirme sua senha"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </label>
-        <button className="btn">Cadastrar</button>
+        {!loading && <button className="btn">Cadastrar</button>}
+        {loading && (
+          <button className="btn" disabled>
+            Aguarde...
+          </button>
+        )}
         {error && <p className="error">{error}</p>}
       </form>
     </div>
