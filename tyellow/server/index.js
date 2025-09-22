@@ -48,7 +48,7 @@ app.get('/api/health', async (_req, res) => {
 });
 
 
-// Registrar usuário
+// Register User
 app.post('/api/register', async (req, res) => {
   const { displayName, email, password } = req.body;
   if (!displayName || !email || !password) {
@@ -61,7 +61,7 @@ app.post('/api/register', async (req, res) => {
     );
     res.status(201).json({ id: result.insertId, displayName, email });
   } catch (e) {
-    // MySQL duplicate entry error code: ER_DUP_ENTRY = 1062
+    // Duplicated email error
     if (e && e.code === 'ER_DUP_ENTRY') {
       return res.status(409).json({ error: 'E-mail já cadastrado' });
     }
@@ -69,7 +69,10 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
+
+app.post('/api/posts/create', async (req, res) => {})
+
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`API ouvindo em http://localhost:${PORT}`);
+  console.log(`Guaraná ouvido em http://localhost:${PORT}`);
 });
