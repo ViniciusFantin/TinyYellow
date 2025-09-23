@@ -23,6 +23,7 @@ export const pool = mysql.createPool({
 
 // Ensure base tables exist
 async function ensureSchema() {
+  // Users table
   await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -30,6 +31,23 @@ async function ensureSchema() {
       email VARCHAR(255) NOT NULL UNIQUE,
       password VARCHAR(255) NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `);
+
+  // Posts table
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS posts (
+      post_id INT AUTO_INCREMENT PRIMARY KEY,
+      post_tittle VARCHAR(255) NOT NULL,
+      post_image TEXT,
+      post_content TEXT NOT NULL,
+      post_tags VARCHAR(500),
+      userID INT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT fk_posts_user FOREIGN KEY (userID)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
   `);
 }
@@ -46,6 +64,39 @@ app.get('/api/health', async (_req, res) => {
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
   }
+});
+
+// API index for diagnostics
+app.get('/', (_req, res) => {
+  res.json({ ok: true, service: 'TinyYellow API Server', base: '/api' });
+});
+app.get('/api', (_req, res) => {
+  res.json({
+    ok: true,
+    message: 'Bem-vindo à API do TinyYellow',
+    endpoints: [
+      'GET /api',
+      'GET /api/health',
+      'GET /api/users/list',
+      'GET /api/posts/list',
+      'POST /api/register',
+      'POST /api/posts/create'
+    ]
+  });
+});
+app.get('/api/', (_req, res) => {
+  res.json({
+    ok: true,
+    message: 'Bem-vindo à API do TinyYellow',
+    endpoints: [
+      'GET /api',
+      'GET /api/health',
+      'GET /api/users/list',
+      'GET /api/posts/list',
+      'POST /api/register',
+      'POST /api/posts/create'
+    ]
+  });
 });
 
 
@@ -98,6 +149,8 @@ app.post('/api/posts/create', async (req, res) => {
     }
 })
 */
+
+// Método para criar um novo post
 app.post('/api/posts/create', async (req, res) => {
     const { email, title, image, content, tags } = req.body;
 
@@ -116,8 +169,6 @@ app.post('/api/posts/create', async (req, res) => {
             return res.status(500).json({ error: 'userID inválido' });
         }
 
-        console.log(userID)
-        console.log(fields)
         const sql = 'INSERT INTO posts (post_tittle, post_image, post_content, post_tags, userID) VALUES (?, ?, ?, ?, ?)';
         const params = [title, image, content, tags, userID];
 
@@ -127,6 +178,17 @@ app.post('/api/posts/create', async (req, res) => {
         return res.status(500).json({ error: e.message });
     }
 });
+
+// Listar posts
+app.get('/api/posts/list', async (req, res) => {
+    try {
+        const [rows] = await pool.execute('SELECT * FROM posts');
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+})
+
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
