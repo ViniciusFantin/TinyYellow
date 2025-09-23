@@ -2,12 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
-import { useGetters } from '../src/hooks/useGetters.js';
 import {auth} from "../src/firebase/config.js";
 
 dotenv.config();
-
-const { getIDbyEmail } = useGetters();
 
 const app = express();
 app.use(cors());
@@ -79,16 +76,19 @@ app.get('/api/users/list', async (_req, res) => {
     } catch (e) {}
 })
 
+/*
 app.post('/api/posts/create', async (req, res) => {
     const email = auth.currentUser.email;
-    const userID = await pool.execute('SELECT id FROM users WHERE email = ?', [email]);
+    const [userID, field] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
 
+    console.log(userID)
+    console.log(field)
     const { title, image, content, tags } = req.body;
     if (!title || !image || !content || !tags) {
         return res.status(400).json({error: 'Faltam dados para criar o post'});
     }
     try {
-        const [result] = await pool.execute(
+        const [userID] = await pool.execute(
             'INSERT INTO posts (post_tittle, post_image, post_content, post_tags, userID) VALUES (?, ?, ?, ?, ?)',
             [title, image, content, tags, userID]
         );
@@ -97,7 +97,36 @@ app.post('/api/posts/create', async (req, res) => {
         res.status(500).json({ error: e.message });
     }
 })
+*/
+app.post('/api/posts/create', async (req, res) => {
+    const { email, title, image, content, tags } = req.body;
 
+    if (!email || !title || !image || !content || !tags) {
+        return res.status(400).json({ error: 'Faltam dados para criar o post' });
+    }
+
+    try {
+        const [rows, fields] = await pool.execute('SELECT id FROM users WHERE email = ?', [email]);
+        if (!rows || rows.length === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
+
+        const userID = Number(rows[0].id);
+        if (!Number.isFinite(userID)) {
+            return res.status(500).json({ error: 'userID inválido' });
+        }
+
+        console.log(userID)
+        console.log(fields)
+        const sql = 'INSERT INTO posts (post_tittle, post_image, post_content, post_tags, userID) VALUES (?, ?, ?, ?, ?)';
+        const params = [title, image, content, tags, userID];
+
+        const [result] = await pool.execute(sql, params);
+        return res.status(201).json({ id: result.insertId, title, image, content, tags, userID });
+    } catch (e) {
+        return res.status(500).json({ error: e.message });
+    }
+});
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

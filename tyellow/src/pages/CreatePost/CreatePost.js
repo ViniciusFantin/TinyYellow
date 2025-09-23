@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthValue } from "../../context/AuthContext";
 import { useInsertDocument } from "../../hooks/useInsertDocument";
+import {auth} from "../../firebase/config";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
@@ -11,6 +12,8 @@ const CreatePost = () => {
   const [body, setBody] = useState("");
   const [tags, setTags] = useState("");
   const [formError, setFormError] = useState("");
+  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:4000";
+  const [loading, setLoading] = useState(false);
 
   const { user } = useAuthValue();
 
@@ -18,8 +21,8 @@ const CreatePost = () => {
 
   const { insertDocument, response } = useInsertDocument("posts");
 
-  const handleSubmit = (e) => {
-    e.preventDefautl();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setFormError("");
 
     /* valida a imagem URL */
@@ -28,16 +31,28 @@ const CreatePost = () => {
     } catch (error) {
       setFormError("A imagem precisa ser uma URL.");
     }
+      /* Checa todos os valores */
+      if (!title || !image || !tags || !body) {
+          setFormError("Preencha todos os campos");
+      }
+
+
+    try{
+        const res = await fetch(`${API_BASE}/api/posts/create`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title, image, content:body, tags, email: auth.currentUser.email }),
+        });
+    } catch (error) {
+        setFormError("Erro ao criar post");
+    }
 
     const tagsArray = tags.split(".").map((tag) => tag.trim().toLowerCase());
 
-    /* Checa todos os valores */
-    if (!title || !image || !tags || !body) {
-      setFormError("Preencha todos os campos");
-    }
 
     if (formError) return;
 
+    /*
     insertDocument({
       title,
       image,
@@ -72,7 +87,7 @@ const CreatePost = () => {
             name="image"
             required
             placeholder="insira uma imagem massa"
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => setImage(e.target.value)}
             value={image}
           />
         </label>
@@ -98,14 +113,13 @@ const CreatePost = () => {
           />
         </label>
 
-        {!response && <button className="btn">Cadastrar</button>}
-        {response && (
-          <button className="btn" disabled>
-            Aguarde...
-          </button>
-        )}
-        {response.error && <p className="error">{response.error}</p>}
-        {formError && <p className="error">{formError}</p>}
+          {!loading && <button className="btn">Cadastrar</button>}
+          {loading && (
+              <button className="btn" disabled>
+                  Aguarde...
+              </button>
+          )}
+
       </form>
     </div>
   );
