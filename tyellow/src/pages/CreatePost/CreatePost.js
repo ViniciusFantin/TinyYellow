@@ -18,8 +18,8 @@ const CreatePost = () => {
 
   const { insertDocument, response } = useInsertDocument("posts");
 
-  const handleSubmit = (e) => {
-    e.preventDefautl();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setFormError("");
 
     /* valida a imagem URL */
@@ -42,7 +42,7 @@ const CreatePost = () => {
       title,
       image,
       body,
-      tagsArray,
+      tags: tagsArray,
       uid: user.uid,
       createBy: user.displayName,
     });
@@ -72,7 +72,7 @@ const CreatePost = () => {
             name="image"
             required
             placeholder="insira uma imagem massa"
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => setImage(e.target.value)}
             value={image}
           />
         </label>

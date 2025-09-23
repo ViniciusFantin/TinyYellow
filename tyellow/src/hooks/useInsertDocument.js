@@ -34,23 +34,27 @@ export const useInsertDocument = (docCollection) => {
     checkCancelBeforeDispatch({
       type: "LOADING",
     });
-    /* try {
-       const newDocument = { ...document, createdAt: aqui fica o timestamp };
+    try {
+      const res = await fetch("api aqui", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(document),
+      });
 
-       const insertedDocument = await AdicionaDoc(
-         collection(bancoDeDados, docCollection),
-         newDocument
-       );
-       checkCancelBeforeDispatch({
-         type: "INSERT_DOC",
-         payload: insertDocument,
-       });
-     } catch (error) {
-       checkCancelBeforeDispatch({
-         type: "ERROR",
-         payload: error.message,
-       });
-     } */
+      if (!res.ok) throw new Error("Erro ao inserir documento");
+
+      const insertedDocument = await res.json();
+
+      checkCancelBeforeDispatch({
+        type: "INSERT_DOC",
+        payload: insertedDocument,
+      });
+    } catch (error) {
+      checkCancelBeforeDispatch({
+        type: "ERROR",
+        payload: error.message,
+      });
+    }
   };
 
   useEffect(() => {
