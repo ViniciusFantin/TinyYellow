@@ -76,9 +76,15 @@ const Home = () => {
             </div>
           </div>
           <nav className={styles.menu}>
-            <Link to="/" className={styles.menuItem}>Início</Link>
-            <Link to="/posts/create" className={styles.menuItem}>Criar Post</Link>
-            <Link to="/search" className={styles.menuItem}>Buscar</Link>
+            <Link to="/" className={styles.menuItem}>
+              Início
+            </Link>
+            <Link to="/posts/create" className={styles.menuItem}>
+              Criar Post
+            </Link>
+            <Link to="/search" className={styles.menuItem}>
+              Buscar
+            </Link>
           </nav>
         </aside>
 
@@ -93,7 +99,9 @@ const Home = () => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
-              <button type="submit" className="btn btn-dark">Pesquisar</button>
+              <button type="submit" className="btn btn-dark">
+                Pesquisar
+              </button>
             </form>
           </div>
 
@@ -103,8 +111,20 @@ const Home = () => {
               Escreva algo...
             </Link>
             <div className={styles.composerActions}>
-              <Link to="/posts/create" className={styles.iconBtn} title="Imagem">🖼️</Link>
-              <Link to="/posts/create" className={styles.iconBtn} title="Hashtag">#</Link>
+              <Link
+                to="/posts/create"
+                className={styles.iconBtn}
+                title="Imagem"
+              >
+                🖼️
+              </Link>
+              <Link
+                to="/posts/create"
+                className={styles.iconBtn}
+                title="Hashtag"
+              >
+                #
+              </Link>
             </div>
           </div>
 
@@ -112,14 +132,20 @@ const Home = () => {
           <div className={styles.feed_card}>
             {loading && <div className={styles.post_item}>Carregando...</div>}
             {error && (
-              <div className={styles.post_item} style={{ color: "red" }}>{error}</div>
+              <div className={styles.post_item} style={{ color: "red" }}>
+                {error}
+              </div>
             )}
 
             {!loading && !error && filtered && filtered.length > 0 && (
               <ul className={styles.post_list}>
                 {filtered.map((post) => {
-                  const id = post.id || post.post_id || `${post.userID}-${post.post_tittle}`;
-                  const title = post.post_tittle || post.title || "(Sem título)";
+                  const id =
+                    post.id ||
+                    post.post_id ||
+                    `${post.userID}-${post.post_tittle}`;
+                  const title =
+                    post.post_tittle || post.title || "(Sem título)";
                   const content = post.post_content || post.content || "";
                   const tags = tagsFrom(post);
                   const author = post.userName || post.author || "Anônimo";
@@ -138,7 +164,11 @@ const Home = () => {
 
                       {post.post_image && (
                         <div className={styles.mediaWrap}>
-                          <img src={post.post_image} alt={title} className={styles.feed_image} />
+                          <img
+                            src={post.post_image}
+                            alt={title}
+                            className={styles.feed_image}
+                          />
                         </div>
                       )}
 
@@ -156,10 +186,18 @@ const Home = () => {
                             .map((t) => t.trim())
                             .filter(Boolean)
                             .map((t) => (
-                              <span key={t} className={styles.tag_chip}>#{t}</span>
+                              <span key={t} className={styles.tag_chip}>
+                                #{t}
+                              </span>
                             ))}
                         </div>
                       )}
+                      <Link
+                        to={`/posts/${post.id}`}
+                        className="btn btn-outline"
+                      >
+                        ler
+                      </Link>
                     </li>
                   );
                 })}
@@ -169,7 +207,9 @@ const Home = () => {
             {!loading && !error && filtered && filtered.length === 0 && (
               <div className={styles.noposts}>
                 <p>Não foram encontrados posts</p>
-                <Link to="/posts/create" className="btn">Criar primeiro post</Link>
+                <Link to="/posts/create" className="btn">
+                  Criar primeiro post
+                </Link>
               </div>
             )}
           </div>
@@ -195,7 +235,9 @@ const Home = () => {
 
           <div className={styles.card}>
             <div className={styles.cardTitle}>Quem seguir</div>
-            <div className={styles.suggestion}>Em breve sugestões personalizadas</div>
+            <div className={styles.suggestion}>
+              Em breve sugestões personalizadas
+            </div>
           </div>
         </aside>
       </div>
