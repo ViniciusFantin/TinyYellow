@@ -19,7 +19,7 @@ export const useFetchDocuments = (tableName, search = null, id = null) => {
         if (id) params.append("id", id);
 
         const res = await fetch(
-          `localhost?${params.toString}` /* trocar o localhost pelo nosso SQL */
+          `http://localhost:4000/api/${tableName}?${params.toString()}` /* trocar o localhost pelo nosso SQL */
         );
 
         if (!res.ok) throw new Error("Erro ao buscar documentos");

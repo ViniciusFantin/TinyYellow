@@ -1,8 +1,8 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import mysql from 'mysql2/promise';
-import {auth} from "../src/firebase/config.js";
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import mysql from "mysql2/promise";
+import { auth } from "../src/firebase/config.js";
 
 dotenv.config();
 
@@ -53,13 +53,13 @@ async function ensureSchema() {
 }
 
 ensureSchema().catch((e) => {
-  console.error('Erro ao preparar o schema do banco:', e);
+  console.error("Erro ao preparar o schema do banco:", e);
 });
 
 // Health check
-app.get('/api/health', async (_req, res) => {
+app.get("/api/health", async (_req, res) => {
   try {
-    const [rows] = await pool.query('SELECT 1 AS ok');
+    const [rows] = await pool.query("SELECT 1 AS ok");
     res.json({ ok: true, db: rows[0].ok === 1 });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
@@ -67,65 +67,66 @@ app.get('/api/health', async (_req, res) => {
 });
 
 // API index for diagnostics
-app.get('/', (_req, res) => {
-  res.json({ ok: true, service: 'TinyYellow API Server', base: '/api' });
+app.get("/", (_req, res) => {
+  res.json({ ok: true, service: "TinyYellow API Server", base: "/api" });
 });
-app.get('/api', (_req, res) => {
+app.get("/api", (_req, res) => {
   res.json({
     ok: true,
-    message: 'Bem-vindo à API do TinyYellow',
+    message: "Bem-vindo à API do TinyYellow",
     endpoints: [
-      'GET /api',
-      'GET /api/health',
-      'GET /api/users/list',
-      'GET /api/posts/list',
-      'POST /api/register',
-      'POST /api/posts/create'
-    ]
+      "GET /api",
+      "GET /api/health",
+      "GET /api/users/list",
+      "GET /api/posts/list",
+      "POST /api/register",
+      "POST /api/posts/create",
+    ],
   });
 });
-app.get('/api/', (_req, res) => {
+app.get("/api/", (_req, res) => {
   res.json({
     ok: true,
-    message: 'Bem-vindo à API do TinyYellow',
+    message: "Bem-vindo à API do TinyYellow",
     endpoints: [
-      'GET /api',
-      'GET /api/health',
-      'GET /api/users/list',
-      'GET /api/posts/list',
-      'POST /api/register',
-      'POST /api/posts/create'
-    ]
+      "GET /api",
+      "GET /api/health",
+      "GET /api/users/list",
+      "GET /api/posts/list",
+      "POST /api/register",
+      "POST /api/posts/create",
+    ],
   });
 });
-
 
 // Register User
-app.post('/api/register', async (req, res) => {
+app.post("/api/register", async (req, res) => {
   const { displayName, email, password } = req.body;
   if (!displayName || !email || !password) {
-    return res.status(400).json({ error: 'displayName, email e password são obrigatórios' });
+    return res
+      .status(400)
+      .json({ error: "displayName, email e password são obrigatórios" });
   }
   try {
     const [result] = await pool.execute(
-      'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
+      "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
       [displayName, email, password]
     );
     res.status(201).json({ id: result.insertId, displayName, email });
   } catch (e) {
     // Duplicated email error
-    if (e && e.code === 'ER_DUP_ENTRY') {
-      return res.status(409).json({ error: 'E-mail já cadastrado' });
+    if (e && e.code === "ER_DUP_ENTRY") {
+      return res.status(409).json({ error: "E-mail já cadastrado" });
     }
     res.status(500).json({ error: e.message });
   }
 });
-app.get('/api/users/list', async (_req, res) => {
-    try {
-        const [rows] = await pool.execute('SELECT * FROM users');
-        res.json(rows);
-    } catch (e) {}
-})
+app.get("/api/users/list", async (_req, res) => {
+  try {
+    const [rows] = await pool.execute("SELECT * FROM users");
+    res.json(rows);
+  } catch (e) {}
+});
 
 /*
 app.post('/api/posts/create', async (req, res) => {
@@ -151,44 +152,68 @@ app.post('/api/posts/create', async (req, res) => {
 */
 
 // Método para criar um novo post
-app.post('/api/posts/create', async (req, res) => {
-    const { email, title, image, content, tags } = req.body;
+app.post("/api/posts/create", async (req, res) => {
+  const { email, title, image, content, tags } = req.body;
 
-    if (!email || !title || !image || !content || !tags) {
-        return res.status(400).json({ error: 'Faltam dados para criar o post' });
+  if (!email || !title || !image || !content || !tags) {
+    return res.status(400).json({ error: "Faltam dados para criar o post" });
+  }
+
+  try {
+    const [rows, fields] = await pool.execute(
+      "SELECT id FROM users WHERE email = ?",
+      [email]
+    );
+    if (!rows || rows.length === 0) {
+      return res.status(404).json({ error: "Usuário não encontrado" });
     }
 
-    try {
-        const [rows, fields] = await pool.execute('SELECT id FROM users WHERE email = ?', [email]);
-        if (!rows || rows.length === 0) {
-            return res.status(404).json({ error: 'Usuário não encontrado' });
-        }
-
-        const userID = Number(rows[0].id);
-        if (!Number.isFinite(userID)) {
-            return res.status(500).json({ error: 'userID inválido' });
-        }
-
-        const sql = 'INSERT INTO posts (post_tittle, post_image, post_content, post_tags, userID) VALUES (?, ?, ?, ?, ?)';
-        const params = [title, image, content, tags, userID];
-
-        const [result] = await pool.execute(sql, params);
-        return res.status(201).json({ id: result.insertId, title, image, content, tags, userID });
-    } catch (e) {
-        return res.status(500).json({ error: e.message });
+    const userID = Number(rows[0].id);
+    if (!Number.isFinite(userID)) {
+      return res.status(500).json({ error: "userID inválido" });
     }
+
+    const sql =
+      "INSERT INTO posts (post_tittle, post_image, post_content, post_tags, userID) VALUES (?, ?, ?, ?, ?)";
+    const params = [title, image, content, tags, userID];
+
+    const [result] = await pool.execute(sql, params);
+    return res
+      .status(201)
+      .json({ id: result.insertId, title, image, content, tags, userID });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
 });
 
 // Listar posts
-app.get('/api/posts/list', async (req, res) => {
-    try {
-        const [rows] = await pool.execute('SELECT * FROM posts');
-        res.json(rows);
-    } catch (e) {
-        res.status(500).json({ error: e.message });
-    }
-})
+app.get("/api/posts/list", async (req, res) => {
+  try {
+    const [rows] = await pool.execute("SELECT * FROM posts");
+    res.json(rows);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 
+// buscar por ID
+app.get("/api/posts/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const [rows] = await pool.execute("SELECT * FROM posts WHERE post_id = ?", [
+      id,
+    ]);
+
+    if (!rows || rows.length === 0) {
+      return res.status(404).json({ error: "POst não encontrado" });
+    }
+
+    res.json(rows[0]);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

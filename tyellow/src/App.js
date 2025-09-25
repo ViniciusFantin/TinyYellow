@@ -22,10 +22,12 @@ import { useAuthentication } from "./hooks/useAuthentication.js";
 /* Pages */
 import Home from "./pages/home/Home.js";
 import About from "./pages/about/About.js";
+import Search from "./pages/search/Search.js";
 import Login from "./pages/login/Login.js";
 import Register from "./pages/register/Register.js";
 import Dashboard from "./pages/Dashboard/Dashboard.js";
 import CreatePost from "./pages/CreatePost/CreatePost.js";
+import Post from "./pages/post/Post.js";
 
 function App() {
   const [user, setUser] = useState(undefined);
@@ -52,6 +54,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/posts/:id" element={<Post />} />
               <Route
                 path="/login"
                 element={!user ? <Login /> : <Navigate to="/" />}
