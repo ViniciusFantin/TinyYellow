@@ -1,30 +1,174 @@
 .home {
+  display: block;
+  padding: 16px;
+  background: #f5f7f9;
+  min-height: 100vh;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 650px) 320px;
+  gap: 24px;
+  align-items: start;
+  justify-content: center;
+}
+
+.left { position: sticky; top: 16px; height: fit-content; }
+.right { position: sticky; top: 16px; height: fit-content; }
+.center { min-width: 0; }
+
+.profileCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #e6ecf0;
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+.avatarLg {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #edf2ff;
+  color: #3b5bdb;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+.profileName { font-weight: 600; }
+.profileHandle { color: #6b7280; font-size: 12px; }
+
+.menu {
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
+  background: #fff;
+  border: 1px solid #e6ecf0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.menuItem {
+  padding: 12px 16px;
+  color: #111;
+  text-decoration: none;
+  border-bottom: 1px solid #f1f3f5;
+}
+.menuItem:hover { background: #f8fafc; }
+.menuItem:last-child { border-bottom: none; }
+
+.feedHeader {
+  display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
 }
 
 .search_form {
-  max-width: 100%;
-  width: 60%;
   display: flex;
-  justify-content: center;
-  margin-bottom: 2em;
+  align-items: center;
+  gap: 8px;
 }
-
 .search_form input {
-  margin-right: 10px;
-  width: 50%;
+  width: 280px;
 }
 
-.noposts {
-  text-align: center;
+/* Composer */
+.composerCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #e6ecf0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
 }
-.noposts p {
-  margin-bottom: 1.5em;
+.composerInput {
+  flex: 1;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 10px 14px;
+  color: #6b7280;
+  text-decoration: none;
+}
+.composerInput:hover { background: #f9fafb; }
+.composerActions { display: flex; gap: 6px; }
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  text-decoration: none;
+}
+.iconBtn:hover { background: #f3f4f6; }
+
+/* Card do feed */
+.feed_card {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e6ecf0;
+  border-radius: 12px;
+  padding: 0 0 8px 0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
 }
 
-.noposts a {
-  padding: 10px 25px;
+.post_list { list-style: none; padding: 0; margin: 0; }
+.post_item { border-bottom: 1px solid #eee; padding: 12px 16px; }
+.post_item:last-child { border-bottom: none; }
+
+.post_header { display: flex; gap: 10px; align-items: center; }
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e7f5ff;
+  color: #1971c2;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+.author { font-weight: 600; }
+.post_title { color: #374151; font-size: 14px; }
+.post_excerpt { margin: 8px 0; color: #4b5563; }
+.mediaWrap { margin: 8px 0; }
+.feed_image { width: 100%; max-height: 480px; object-fit: cover; border-radius: 8px; }
+
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag_chip { background: #f1f3f5; padding: 2px 8px; border-radius: 12px; font-size: 12px; }
+
+.noposts { text-align: center; padding: 16px; }
+.noposts p { margin-bottom: 1.5em; }
+.noposts a { padding: 10px 25px; }
+
+/* Right sidebar cards */
+.card {
+  background: #fff;
+  border: 1px solid #e6ecf0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+}
+.cardTitle { font-weight: 700; margin-bottom: 8px; }
+.trendList { list-style: none; margin: 0; padding: 0; }
+.trendItem { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f3f5; }
+.trendItem:last-child { border-bottom: none; }
+.trendCount { color: #6b7280; font-size: 12px; }
+.trendEmpty { color: #6b7280; font-size: 14px; padding: 6px 0; }
+.suggestion { color: #6b7280; font-size: 14px; }
+
+/* Responsivo */
+@media (max-width: 1100px) {
+  .columns { grid-template-columns: 220px minmax(0, 1fr); }
+  .right { display: none; }
+}
+@media (max-width: 760px) {
+  .columns { grid-template-columns: 1fr; }
+  .left { display: none; }
+  .feed_card { border-radius: 0; }
 }

@@ -1,11 +1,157 @@
 .create_post {
-  text-align: center;
-}
-.create_post h2 {
-  font-size: 2.2em;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
 }
 
-.create_post p {
-  color: #aaa;
-  margin-bottom: 2em;
+.composer {
+  display: flex;
+  width: 100%;
+  max-width: 40vw;
+  max-height: 80vh;
+  height: 100%;
+  background: #fff;
+  border: 1px solid #e6ecf0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
 }
+
+.avatar_col {
+  margin-right: 12px;
+}
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #1da1f2;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.main_col {
+  flex: 1;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 100px;
+  resize: vertical;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  line-height: 1.4;
+}
+.textarea::placeholder { color: #8899a6; }
+
+.image_preview_row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.image_preview {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #e6ecf0;
+}
+.remove_image_btn {
+  border: 1px solid #e6ecf0;
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid #e6ecf0;
+  padding-top: 8px;
+}
+.left_tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1; /* permite que os inputs cresçam acompanhando o card */
+}
+.right_tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon_btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 20px;
+}
+.icon_btn:hover { color: #1da1f2; }
+
+.tags_input, .title_input {
+  border: 1px solid #e6ecf0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  outline: none;
+  font-size: 14px;
+}
+
+/* Título ocupa toda a largura do card */
+.title_input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Tags se expandem dentro da toolbar, mantendo responsividade */
+.tags_input {
+  flex: 1 1 300px;
+  min-width: 240px;
+  box-sizing: border-box;
+}
+.tags_input::placeholder { color: #8899a6; }
+.title_input::placeholder { color: #8899a6; }
+
+.counter {
+  color: #8899a6;
+  font-size: 12px;
+}
+
+.tweet_btn {
+  background: #1da1f2;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tweet_btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.drop_hint {
+  text-align: center;
+  font-size: 13px;
+  color: #1da1f2;
+  border: 2px dashed #1da1f2;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.error { color: #c00; }
