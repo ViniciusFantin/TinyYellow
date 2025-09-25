@@ -196,7 +196,7 @@ app.get("/api/posts/list", async (req, res) => {
   }
 });
 
-// buscar por ID
+// buscar posts por id
 app.get("/api/posts/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -206,7 +206,7 @@ app.get("/api/posts/:id", async (req, res) => {
     ]);
 
     if (!rows || rows.length === 0) {
-      return res.status(404).json({ error: "POst não encontrado" });
+      return res.status(404).json({ error: "Post não encontrado" });
     }
 
     res.json(rows[0]);
