@@ -186,19 +186,9 @@ app.post("/api/posts/create", async (req, res) => {
 });
 
 // Listar posts
-<<<<<<< HEAD
 app.get("/api/posts/list", async (req, res) => {
   try {
-    const [rows] = await pool.execute("SELECT * FROM posts");
-    res.json(rows);
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-=======
-app.get('/api/posts/list', async (req, res) => {
-    try {
-        const sql = `
+    const sql = `
           SELECT
             p.postID AS id,
             p.post_tittle,
@@ -213,14 +203,12 @@ app.get('/api/posts/list', async (req, res) => {
           FROM posts p
           INNER JOIN users u ON p.userID = u.id
         `;
-        const [rows] = await pool.execute(sql);
-        res.json(rows);
-    } catch (e) {
-        res.status(500).json({ error: e.message });
-    }
-})
-
->>>>>>> origin/surdelicia
+    const [rows] = await pool.execute(sql);
+    res.json(rows);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
