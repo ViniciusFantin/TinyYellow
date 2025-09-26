@@ -181,7 +181,22 @@ app.post('/api/posts/create', async (req, res) => {
 // Listar posts
 app.get('/api/posts/list', async (req, res) => {
     try {
-        const [rows] = await pool.execute('SELECT * FROM posts');
+        const sql = `
+          SELECT
+            p.postID AS id,
+            p.post_tittle,
+            p.post_content,
+            p.post_tags,
+            p.post_image,
+            p.userID,
+            u.id       AS author_id,
+            u.name     AS author_name,
+            u.email    AS author_email,
+            u.created_at AS author_created_at
+          FROM posts p
+          INNER JOIN users u ON p.userID = u.id
+        `;
+        const [rows] = await pool.execute(sql);
         res.json(rows);
     } catch (e) {
         res.status(500).json({ error: e.message });
