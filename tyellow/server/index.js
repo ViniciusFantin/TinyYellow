@@ -185,6 +185,62 @@ app.post("/api/posts/create", async (req, res) => {
   }
 });
 
+/* Delete dos Posts */
+app.delete("/api/posts/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const [result] = await pool.execute("DELETE FROM posts WHERE post_id = ?", [
+      id,
+    ]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Post não encontrado" });
+    }
+
+    res.json({ ok: true, message: "Post deletado com sucesso" });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+/* Edição do Post */
+app.put("/api/posts/:id", async (req, res) => {
+  const { id } = req.params;
+  const { email, title, image, content, tags } = req.body;
+  try {
+    const [rows] = await pool.execute("SELECT id FROM users WHERE email = ?", [
+      email,
+    ]);
+    if (!rows | (rows.length === 0))
+      return res.status(404).json({ error: "Usuário não encontrado" });
+
+    const userID = rows[0].id;
+    const sql = `
+      UPDATE posts
+      SET post_tittle = ?, post_image = ?, post_content = ?, post_tags = ?
+      WHERE post_id = ? AND userID = ?
+    `;
+    const [result] = await pool.execute(sql, [
+      title,
+      image,
+      content,
+      tags,
+      id,
+      userID,
+    ]);
+
+    if (result.affectedRows === 0)
+      return res
+        .status(404)
+        .json({ error: "Post não encontrado ou não pertence ao usuário" });
+
+    res.json({ ok: true, id, title, image, content, tags });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // Listar posts
 app.get("/api/posts/list", async (req, res) => {
   try {
