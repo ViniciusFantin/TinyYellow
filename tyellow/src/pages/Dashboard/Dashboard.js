@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 // Hooks
 import { useAuthValue } from "../../context/AuthContext";
-import { useFetchDocuments } from "../../hooks/useFetchDocuments";
+import { useFetchDocuments } from "../../hooks/useFetchDocument";
 import { useDeleteDocument } from "../../hooks/useDeleteDocument";
 
 const Dashboard = () => {
