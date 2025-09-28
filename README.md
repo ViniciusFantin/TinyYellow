@@ -1,6 +1,7 @@
 # 🎨 TinyYellow
  Aplicação web desenvolvida com React e TypeScript.
  - O projeto consiste em uma rede de comunidade, onde pessoas podem postar suas ideias, momentos, curiosidades, dentre outras possibilidades
+ - VIDEO DA APLICAÇÃO: https://youtu.be/VqjVQsqgiSY
 
 ✨ Funcionalidades:
 🖼️ Criação de posts sendo texto, obras, links, imagens, projetos, com:
@@ -40,6 +41,6 @@ Fornecer uma plataforma simples e funcional para designers compartilharem seu tr
 
 # ⚙️Requirements
 - Firebase database (-npm i firebase)
-- TyepScript (-npm i ts)
+- - TyepScript (-npm i ts)
 - react-router-dom (-npm i react-router-dom)
 - Node.js modules
