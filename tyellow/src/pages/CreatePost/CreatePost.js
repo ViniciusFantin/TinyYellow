@@ -3,7 +3,6 @@ import styles from "./CreatePost.module.css";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthValue } from "../../context/AuthContext";
-import { useInsertDocument } from "../../hooks/useInsertDocument";
 import { auth } from "../../firebase/config";
 
 const MAX_IMAGE_MB = 5;

@@ -241,6 +241,38 @@ app.put("/api/posts/:id", async (req, res) => {
   }
 });
 
+// buscar posts por id
+
+// app.get("/api/posts/:id", async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     const [rows] = await pool.execute(
+//       `SELECT
+//          p.post_id   AS id,
+//          p.post_tittle AS title,
+//          p.post_image AS image,
+//          p.post_content AS content,
+//          p.post_tags   AS tags,
+//          u.id          AS author_id,
+//          u.name        AS author_name,
+//          u.email       AS author_email,
+//          p.created_at
+//        FROM posts p
+//        INNER JOIN users u ON p.userID = u.id
+//        WHERE p.post_id = ?`,
+//       [id]
+//     );
+
+//     if (!rows || rows.length === 0) {
+//       return res.status(404).json({ error: "Post não encontrado" });
+//     }
+
+//     res.json(rows[0]);
+//   } catch (e) {
+//     res.status(500).json({ error: e.message });
+//   }
+// });
+
 // Listar posts
 app.get("/api/posts/list", async (req, res) => {
   try {

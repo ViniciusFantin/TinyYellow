@@ -28,9 +28,9 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-    listPosts();
-  }, []);
+  // useEffect(() => {
+  //   listPosts();
+  // }, []);
 
   const filtered = useMemo(() => {
     if (!query) return posts;

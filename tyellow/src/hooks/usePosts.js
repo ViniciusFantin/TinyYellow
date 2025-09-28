@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 export function usePosts(query = "") {
-  const [posts, setPosts] = useState([]); // ✅ array, não objeto
+  const [posts, setPosts] = useState([]); // array, não objeto
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:37844";
