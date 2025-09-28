@@ -266,7 +266,7 @@ app.get("/api/posts/list", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 37844;
 app.listen(PORT, () => {
   console.log(`Guaraná ouvido em http://localhost:${PORT}`);
 });
