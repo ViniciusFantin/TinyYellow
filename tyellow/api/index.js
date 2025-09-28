@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
+import serverless from 'serverless-http';
+
 
 dotenv.config();
 
@@ -203,8 +205,8 @@ app.get('/api/posts/list', async (req, res) => {
     }
 })
 
+export const handler = serverless(app)
 
-const PORT = process.env.PORT || 37844;
-app.listen(PORT, () => {
-  console.log(`Guaraná ouvido em http://localhost:${PORT}`);
-});
+// Listen para desenvolvimento em ambiente local
+const port = process.env.PORT || 37844;
+app.listen(port, () => console.log(`Servidor rodando em http://localhost:${port}`));
