@@ -9,7 +9,7 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:4000";
+  const API_BASE = process.env.REACT_APP_API_BASE || "https://tiny-yellow-1et1.vercel.app";
 
     const { createUser, error: authError, loading } = useAuthentication();
   const handleSubmit = async (e) => {
