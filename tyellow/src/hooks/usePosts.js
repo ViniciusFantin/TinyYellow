@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 
 export function usePosts(query = "") {
-  const { posts, setPosts } = useState([]);
+  const [posts, setPosts] = useState([]); // ✅ array, não objeto
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:4000";
+  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:37844";
 
   const listPosts = async () => {
     setLoading(true);
@@ -13,9 +13,10 @@ export function usePosts(query = "") {
       const res = await fetch(`${API_BASE}/api/posts/list`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Erro ao listar posts");
-      setPosts(data);
+      setPosts(data || []); // garante array
     } catch (err) {
       setError(err.message);
+      setPosts([]); // fallback seguro
     } finally {
       setLoading(false);
     }

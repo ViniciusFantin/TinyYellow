@@ -1,10 +1,3 @@
-/*
-#################################################################
-Pra testar as abas precisa tirar as condicionais das rotas
-enquanto a gente não armazena o user no banco piazão
-#################################################################
-*/
-
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar.js";

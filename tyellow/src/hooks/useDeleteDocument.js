@@ -29,9 +29,12 @@ export const useDeleteDocument = (collection) => {
     checkCancelBeforeDispatch({ type: "LOADING" });
 
     try {
-      const res = await fetch(`http://localhost:4000/api/${collection}/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `http://localhost:37844/api/${collection}/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!res.ok) {
         throw new Error("Erro ao deletar documento");
