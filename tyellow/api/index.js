@@ -7,7 +7,11 @@ import serverless from 'serverless-http';
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: "https://seu-frontend.vercel.app",
+    methods: ["GET", "POST", "OPTIONS"], // aqui incluímos OPTIONS
+    allowedHeaders: ["Content-Type", "Authorization"],
+}));
 app.use(express.json());
 
 // Conexão com o banco Railway
