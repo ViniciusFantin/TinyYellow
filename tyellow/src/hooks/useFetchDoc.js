@@ -6,7 +6,7 @@ export const useFetchDoc = (docCollection, id) => {
   const [loading, setLoading] = useState(null);
 
   const [cancelled, setCancelled] = useState(false);
-  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:4000";
+  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:37844";
 
   useEffect(() => {
     async function loadDocument() {
@@ -29,6 +29,7 @@ export const useFetchDoc = (docCollection, id) => {
         setLoading(false);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [docCollection, id, cancelled]);
 
   useEffect(() => {

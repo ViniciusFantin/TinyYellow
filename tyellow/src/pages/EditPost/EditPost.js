@@ -1,13 +1,12 @@
-import styles from "./CreatePost.module.css";
+import styles from "../CreatePost/CreatePost.module.css";
 
-import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuthValue } from "../../context/AuthContext";
 import { auth } from "../../firebase/config";
-
 const MAX_IMAGE_MB = 5;
-
-const CreatePost = () => {
+const EditPost = () => {
+  const { id } = useParams();
   const [title, setTitle] = useState("");
   const [image, setImage] = useState(""); // base64 Data URL ou URL externa
   const [imagePreview, setImagePreview] = useState("");
@@ -15,17 +14,41 @@ const CreatePost = () => {
   const [body, setBody] = useState("");
   const [tags, setTags] = useState("");
   const [formError, setFormError] = useState("");
-  const API_BASE = process.env.REACT_APP_API_BASE || "https://tiny-yellow-1et1.vercel.app";
+  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:37844";
   const [loading, setLoading] = useState(false);
 
   const { user } = useAuthValue();
 
   const navigate = useNavigate();
 
-  // const { insertDocument, response } = useInsertDocument("posts");
-
   const fileInputRef = useRef(null);
 
+  /* Resgata o post para edição */
+  useEffect(() => {
+    async function fetchPost() {
+      try {
+        const res = await fetch(`${API_BASE}/api/posts/list`);
+
+        if (!res.ok) throw new Error("Erro ao carregar Post");
+
+        const data = await res.json();
+        const current = data.find((p) => String(p.id) === String(id));
+
+        if (current) {
+          setTitle(current.post_title);
+          setBody(current.post_content);
+          setImage(current.post_image);
+          setImagePreview(current.post_image);
+          setTags(current.post_tags || "");
+        }
+      } catch (e) {
+        setFormError(e.message);
+      }
+    }
+    fetchPost();
+  }, [id, API_BASE]);
+
+  /* Manipula o arquivo */
   const handleFile = (file) => {
     if (!file) return;
     if (!file.type.startsWith("image/")) {
@@ -89,8 +112,8 @@ const CreatePost = () => {
 
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/posts/create`, {
-        method: "POST",
+      const res = await fetch(`${API_BASE}/api/posts/${id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title,
@@ -111,7 +134,7 @@ const CreatePost = () => {
       }
 
       // sucesso
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       setFormError(error.message || "Erro ao criar post");
     } finally {
@@ -230,5 +253,4 @@ const CreatePost = () => {
     </div>
   );
 };
-
-export default CreatePost;
+export default EditPost;

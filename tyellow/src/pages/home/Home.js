@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./homeStyle.module.css";
 import { useEffect, useMemo, useState } from "react";
-import {useAuthValue} from "../../context/AuthContext";
+import { useAuthValue } from "../../context/AuthContext";
 
 const Home = () => {
   const [query, setQuery] = useState("");
@@ -11,7 +11,6 @@ const Home = () => {
   const [error, setError] = useState("");
   const API_BASE = process.env.REACT_APP_API_BASE || "https://tiny-yellow-1et1.vercel.app";
   const { user } = useAuthValue();
-
 
   // função para listar posts
   const listPosts = async () => {
@@ -29,9 +28,9 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-    listPosts();
-  }, []);
+  // useEffect(() => {
+  //   listPosts();
+  // }, []);
 
   const filtered = useMemo(() => {
     if (!query) return posts;
@@ -41,7 +40,12 @@ const Home = () => {
       const title = String(p.post_tittle || p.title || "").toLowerCase();
       const content = String(p.post_content || p.content || "").toLowerCase();
       const author = String(p.author_name || p.author || "").toLowerCase();
-      return tags.includes(q) || title.includes(q) || content.includes(q) || author.includes(q);
+      return (
+        tags.includes(q) ||
+        title.includes(q) ||
+        content.includes(q) ||
+        author.includes(q)
+      );
     });
   }, [posts, query]);
 
@@ -72,18 +76,26 @@ const Home = () => {
         {/* Left sidebar */}
         <aside className={styles.left}>
           <div className={styles.profileCard}>
-              <div className={styles.avatar}>
-                  {(user?.displayName || user?.email || "U").charAt(0).toUpperCase()}
-              </div>
+            <div className={styles.avatar}>
+              {(user?.displayName || user?.email || "U")
+                .charAt(0)
+                .toUpperCase()}
+            </div>
             <div>
-              <div className={styles.profileName}>{(user?.displayName)}</div>
-              <div className={styles.profileHandle}>{(user?.email)}</div>
+              <div className={styles.profileName}>{user?.displayName}</div>
+              <div className={styles.profileHandle}>{user?.email}</div>
             </div>
           </div>
           <nav className={styles.menu}>
-            <Link to="/" className={styles.menuItem}>Início</Link>
-            <Link to="/posts/create" className={styles.menuItem}>Criar Post</Link>
-            <Link to="/search" className={styles.menuItem}>Buscar</Link>
+            <Link to="/" className={styles.menuItem}>
+              Início
+            </Link>
+            <Link to="/posts/create" className={styles.menuItem}>
+              Criar Post
+            </Link>
+            <Link to="/search" className={styles.menuItem}>
+              Buscar
+            </Link>
           </nav>
         </aside>
 
@@ -98,7 +110,9 @@ const Home = () => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
-              <button type="submit" className="btn btn-dark">Pesquisar</button>
+              <button type="submit" className="btn btn-dark">
+                Pesquisar
+              </button>
             </form>
           </div>
 
@@ -108,8 +122,20 @@ const Home = () => {
               Escreva algo...
             </Link>
             <div className={styles.composerActions}>
-              <Link to="/posts/create" className={styles.iconBtn} title="Imagem">🖼️</Link>
-              <Link to="/posts/create" className={styles.iconBtn} title="Hashtag">#</Link>
+              <Link
+                to="/posts/create"
+                className={styles.iconBtn}
+                title="Imagem"
+              >
+                🖼️
+              </Link>
+              <Link
+                to="/posts/create"
+                className={styles.iconBtn}
+                title="Hashtag"
+              >
+                #
+              </Link>
             </div>
           </div>
 
@@ -117,17 +143,29 @@ const Home = () => {
           <div className={styles.feed_card}>
             {loading && <div className={styles.post_item}>Carregando...</div>}
             {error && (
-              <div className={styles.post_item} style={{ color: "red" }}>{error}</div>
+              <div className={styles.post_item} style={{ color: "red" }}>
+                {error}
+              </div>
             )}
 
             {!loading && !error && filtered && filtered.length > 0 && (
               <ul className={styles.post_list}>
                 {filtered.map((post) => {
-                  const id = post.id || post.postID || `${post.userID}-${post.post_tittle}`;
-                  const title = post.post_tittle || post.title || "(Sem título)";
+                  const id =
+                    post.id ||
+                    post.postID ||
+                    `${post.userID}-${post.post_tittle}`;
+                  const title =
+                    post.post_tittle || post.title || "(Sem título)";
                   const content = post.post_content || post.content || "";
                   const tags = tagsFrom(post);
-                  const author = post.author || post.name || post.author || post.author_email || post.email || "Anônimo";
+                  const author =
+                    post.author ||
+                    post.name ||
+                    post.author ||
+                    post.author_email ||
+                    post.email ||
+                    "Anônimo";
 
                   return (
                     <li key={id} className={styles.post_item}>
@@ -143,7 +181,11 @@ const Home = () => {
 
                       {post.post_image && (
                         <div className={styles.mediaWrap}>
-                          <img src={post.post_image} alt={title} className={styles.feed_image} />
+                          <img
+                            src={post.post_image}
+                            alt={title}
+                            className={styles.feed_image}
+                          />
                         </div>
                       )}
 
@@ -161,10 +203,18 @@ const Home = () => {
                             .map((t) => t.trim())
                             .filter(Boolean)
                             .map((t) => (
-                              <span key={t} className={styles.tag_chip}>#{t}</span>
+                              <span key={t} className={styles.tag_chip}>
+                                #{t}
+                              </span>
                             ))}
                         </div>
                       )}
+                      <Link
+                        to={`/posts/${post.id}`}
+                        className="btn btn-outline"
+                      >
+                        ler
+                      </Link>
                     </li>
                   );
                 })}
@@ -174,7 +224,9 @@ const Home = () => {
             {!loading && !error && filtered && filtered.length === 0 && (
               <div className={styles.noposts}>
                 <p>Não foram encontrados posts</p>
-                <Link to="/posts/create" className="btn">Criar primeiro post</Link>
+                <Link to="/posts/create" className="btn">
+                  Criar primeiro post
+                </Link>
               </div>
             )}
           </div>
@@ -200,7 +252,9 @@ const Home = () => {
 
           <div className={styles.card}>
             <div className={styles.cardTitle}>Quem seguir</div>
-            <div className={styles.suggestion}>Em breve sugestões personalizadas</div>
+            <div className={styles.suggestion}>
+              Em breve sugestões personalizadas
+            </div>
           </div>
         </aside>
       </div>

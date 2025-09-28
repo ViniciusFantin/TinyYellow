@@ -11,17 +11,19 @@ const Register = () => {
   const [success, setSuccess] = useState("");
   const API_BASE = process.env.REACT_APP_API_BASE || "https://tiny-yellow-1et1.vercel.app";
 
-    const { createUser, error: authError, loading } = useAuthentication();
+
+
+  const { createUser, error: loading } = useAuthentication();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-      const user = {
-          displayName,
-          email,
-          password,
-      };
+    const user = {
+      displayName,
+      email,
+      password,
+    };
 
     if (password !== confirmPassword) {
       setError("As senhas precisam ser iguais");
@@ -112,7 +114,7 @@ const Register = () => {
         )}
 
         {error && <p className="error">{error}</p>}
-          {!error && success && <p className="success">{success}</p>}
+        {!error && success && <p className="success">{success}</p>}
       </form>
     </div>
   );
