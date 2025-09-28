@@ -206,7 +206,3 @@ app.get('/api/posts/list', async (req, res) => {
 })
 
 export const handler = serverless(app)
-
-// Listen para desenvolvimento em ambiente local
-const port = process.env.PORT || 37844;
-app.listen(port, () => console.log(`Servidor rodando em http://localhost:${port}`));
