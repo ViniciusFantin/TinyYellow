@@ -13,11 +13,9 @@
 
 - Descrição da obra
 
-- URL da imagem para exibição
+- imagem para exibição
 
 👥 Autenticação de usuários via e-mail e senha, utilizando o Firebase Authentication:
-
-- Usuários devem criar uma conta no primeiro acesso
 
 - Apenas usuários autenticados podem criar e publicar posts
 
@@ -33,15 +31,14 @@
 
 -> Firebase Authentication (login, cadastro, sessão)
 
--> Firestore Database (armazenamento dos posts dos usuários)
+-> MySQL (armazenamento dos posts dos usuários)
 
 - React Router – Navegação entre páginas (login, cadastro, feed, criar post)
 
 🎯 Objetivo
-Fornecer uma plataforma simples e funcional para designers compartilharem seu trabalho com a comunidade, ao mesmo tempo que se pratica o uso de ferramentas modernas como React e Firebase para autenticação, banco de dados e estrutura de front-end, e typescript no backend.
+Fornecer uma plataforma simples e funcional para compartilhar seus conhecimentos, histórias, momentos, etc...  
 
 # ⚙️Requirements
-- Firebase database (-npm i firebase)
-- - TyepScript (-npm i ts)
-- react-router-dom (-npm i react-router-dom)
-- Node.js modules
+- Node.js modules -> npm install (para dependências)
+- cors -> npm i cors (para o banco/servidor)
+- react-router-dom -> npm i react-router-dom (para rotas)
