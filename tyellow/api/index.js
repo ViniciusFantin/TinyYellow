@@ -141,5 +141,6 @@ ORDER BY p.created_at DESC
   }
 });
 
-export const handler = serverless(app);
+export default serverless(app);
+
 
